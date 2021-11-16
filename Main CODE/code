@@ -225,14 +225,6 @@ void loop()
   s += time_str;
   s += "</td></tr></table>";
 
-  if(gps.location.isValid())
-  {
-   s += "<a href=\"http://maps.google.com/maps?&z=15&mrt=yp&t=k&q=";
-   s += lat_str;
-   s += '+';
-   s += lng_str;
-   s += "\">Click here!To check the location in Google maps.</a>";
-  }
   //buzzer...................................
    s += " CONTROL BUZZER: ";
    if(value3 == HIGH)
