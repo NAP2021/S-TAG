@@ -20,6 +20,8 @@ TinyGPSPlus gps;
 SoftwareSerial ss(4,5); // for connect GPS
 
 const int BUZZER = 2;//buzzer edit
+const int vibm = 0;//vibrating motor
+
 const char* ssid = "OPPO F9 Pro";
 const char* password = "123456789123";
 
@@ -43,6 +45,8 @@ void setup()
   //buzzer...............
   pinMode(BUZZER, OUTPUT); 
   digitalWrite(BUZZER, LOW);
+  pinMode(vibm, OUTPUT); 
+  digitalWrite(vibm, LOW);
   
   Serial.println();
   Serial.print("Connecting to ");
@@ -66,6 +70,8 @@ void setup()
   //Show IP address
 
   Serial.println(WiFi.localIP());
+  WiFi.setAutoReconnect(true);
+  WiFi.persistent(true);
 //  buzzer........................................
 //  server.on("/", HTTP_GET, handleRoot);     
 //  server.on("/BUZ", HTTP_POST, handleBUZ);  
@@ -181,6 +187,7 @@ void loop()
   if(!client)
   {
     return;
+
   }
 //buzzer............................................
   String request = client.readStringUntil('\r');
@@ -191,54 +198,83 @@ void loop()
   int value3=LOW;
 
    if(request.indexOf("BUZZER=ON") != -1)
+
   {
+
     digitalWrite(BUZZER, HIGH); // Turn LED ON
+    digitalWrite(vibm, HIGH);
     Serial.println(request.indexOf("BUZZER=ON"));
+
     value3 = HIGH;
+
   }
 
   if(request.indexOf("BUZZER=OFF") != -1)
 
   {
+
     digitalWrite(BUZZER, LOW); // Turn LED OFF
+    digitalWrite(vibm, LOW);
     Serial.println(request.indexOf("/BUZZER=OFF"));
+
     value3 = LOW;
   }
+
+  
+
+  
+
   //prepare the response
 
-  String s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n <!DOCTYPE html><html><head><title>GPSNodeMCU A-Arduino </title><style>";
-  s += "a:link {background-color: YELLOW;text-decoration: none;}";
-  s += "table,th,td {border: 1px solid black;}</style></head><body><h1 style=";
-  s += "font-size:300%;";
-  s += " ALIGN=CENTER> GPS Interfacing with NodeMCU</h1>";
-  s += "<p ALIGN=CENTER style=""font-size:150%;""";  
-  s += "> <b>Location Details</b></p><table ALIGN=CENTER style=";
-  s += "width:50%";
-  s += "> <tr> <th>Latitude</th>";
+  String s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n <!DOCTYPE html><html><head><title>S-TAG</title><style> body {background: #4CA1AF;background: -webkit-linear-gradient(to right, #C4E0E5, #4CA1AF); background: linear-gradient(to right, #C4E0E5, #4CA1AF); text-align: center;}table,th,td {border: 1px solid white;}  </style></head><body><div class=""container"" style=""padding-top: 40px;padding-bottom: 20px;margin-top: 3px;""><h1 style=ALIGN=CENTER;> SMART TAG</h1><p ALIGN=CENTER style="" font-size:150%;""";
+  s +="> <b>Location Details</b></p><table ALIGN=CENTER style="";width:70%"" class="" ;>";
+  s += "<tr><th>Latitude</th>";
   s += "<td ALIGN=CENTER>";
-  s += lat_str;
-  s += "</td></tr><tr><th>Longitude</th><td ALIGN=CENTER>";
-  s += lng_str;
-  s += "</td></tr><tr><th>Date</th><td ALIGN=CENTER>";
-  s += date_str;
-  s += "</td></tr><tr><th>Time</th><td ALIGN=CENTER>";
-  s += time_str;
-  s += "</td></tr></table>";
+  s +=lat_str;
+  s +="</td></tr><tr><th>Longitude</th><td ALIGN=CENTER>";
+  s +=lng_str;
+  s +="</td></tr><tr><th>Date</th><td ALIGN=CENTER>";
+  s +=date_str;
+  s +="</td></tr><tr><th>Time</th><td ALIGN=CENTER>";
+  s +=time_str;
+  s +="</td></tr></table>";
 
+  if(gps.location.isValid())
+  {
+   s += "<br><a href=\"http://maps.google.com/maps?&z=15&mrt=yp&t=k&q="; 
+   s += lat_str;
+   s += '+';
+   s += lng_str;
+   s += "\">Click here!To check the location in Google maps.</a>";
+   
+  }
   //buzzer...................................
    s += " CONTROL BUZZER: ";
    if(value3 == HIGH)
+
   {
+
     s +="ON";
+
   }
+
   else
+
   {
+
     s +="OFF";
+
   }
-  s +="<br><br>";
-  s +="<a href=\"/BUZZER=ON\"\"><button>ON</button></a>";
-  s +="<a href=\"/BUZZER=OFF\"\"><button>OFF</button></a><br />";
-  s += "</body> </html> \n";
+  s +="<br><br><p>Press the Button to Turn On/Off the Buzzer</p><p>CONTROL BUZZER: </p>";
+  s +="<a href=\"/BUZZER=ON\"\"><button class=""btn "">ON</button></a>";
+  s +="<a href=\"/BUZZER=OFF\"\"><button class=""btn "">OFF</button></a><br><br></div><footer style=""background-color: black;height: 107px;""><h3 style=""padding-top: 10px;margin-bottom: 15px;"">Created By:</h3><div class=""container""><div style=""float: left; width: 33%; font-size: 18px;"">Naman Shandilya(19BLC1015)</div><div style=""float: left; width: 33%;font-size: 18px;"">P Uday Bhaskar(19BEC1398)</div><div style=""float: left; width: 33%;font-size: 18px;"">Aman Sahu(19BEC1180)</div></div></footer></body></html>";
+  
+
   client.print(s);
   delay(100);
+  
+  
+  
+   
+        
  }
