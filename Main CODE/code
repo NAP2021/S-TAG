@@ -72,10 +72,6 @@ void setup()
   Serial.println(WiFi.localIP());
   WiFi.setAutoReconnect(true);
   WiFi.persistent(true);
-//  buzzer........................................
-//  server.on("/", HTTP_GET, handleRoot);     
-//  server.on("/BUZ", HTTP_POST, handleBUZ);  
-//  server.onNotFound(handleNotFound);   
 
 }
 
@@ -168,16 +164,6 @@ void loop()
 
     }
 
-//    server.handleClient();                    
-//    if (buzzing_state == true) {
-//    digitalWrite(buz_pin, HIGH);
-//    delay(400);
-//    yield();
-//    digitalWrite(buz_pin, LOW);
-//    delay(200);
-//    yield();
-//    delay(400);
-//    yield();
 
  }
 
@@ -278,3 +264,6 @@ void loop()
    
         
  }
+
+
+  
